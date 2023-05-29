@@ -8,10 +8,14 @@ module Jekyll
         safe true
         priority :lowest
 
+        def paginate_per_page(site)
+          site.config['paginate_categories'] || site.config['paginate']
+        end
+
         def generate(site)
           if Paginate::Pager.pagination_enabled?(site)
             site.categories.each do |category, posts|
-              total = Paginate::Pager.calculate_pages(posts, site.config['paginate'])
+              total = Paginate::Pager.calculate_pages(posts, paginate_per_page(site))
               (1..total).each do |i|
                 site.pages << IndexPage.new(site, category, i)
               end
